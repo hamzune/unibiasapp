@@ -44,7 +44,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
         transitionBackgroundColor: LightThemeColors.mainColor,
         body: Container(
           decoration: BoxDecoration(
-            // color: Color(0XFFf3f6f9),
             color: LightThemeColors.mainColor,
             borderRadius:
                 BorderRadius.vertical(top: const Radius.circular(25.0)),
@@ -113,8 +112,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           if (appointments.length > 0 &&
                               view == CalendarElement.appointment) {
                             if (appointments?.last == appointments?.first) {
-                              // print(appointments?.first?.eventName);
-                              showAddEventScreen(context, appointments?.first);
+                              showAddEventScreen(context, appointments?.first,
+                                  calendarRepository);
                             }
                           }
                         } catch (Error) {

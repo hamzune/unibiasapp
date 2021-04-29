@@ -12,6 +12,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        title: Text('Add new event'),
         leading: IconButton(
           icon: Icon(Icons.close),
           onPressed: () => Navigator.pop(context),
@@ -19,6 +20,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       ),
       body: Container(
         color: Colors.white,
+        child: Center(
+          child: Text('Coming soon'),
+        ),
       ),
     );
   }

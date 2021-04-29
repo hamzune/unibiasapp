@@ -28,9 +28,9 @@ class _StatsScreenState extends State<StatsScreen> {
         ),
       ),
       body: Container(
-        color: Colors.yellow,
+        color: LightThemeColors.mainColor,
         child: Center(
-          child: Text('Stats'),
+          child: Text('Coming soon'),
         ),
       ),
     );

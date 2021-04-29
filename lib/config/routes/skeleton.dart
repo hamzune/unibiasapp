@@ -22,11 +22,16 @@ class _SketeletonState extends State<Sketeleton> {
     "Profile": GlobalKey<NavigatorState>(),
   };
 
+  void setStateIfMounted(f) {
+    if (mounted) setState(f);
+  }
+
   void _selectTab(String tabItem, int index, bool add) {
     if (tabItem == _currentTab) {
       _navigatorKeys[tabItem].currentState.popUntil((route) => route.isFirst);
     } else {
-      setState(() {
+      if (!mounted) return;
+      setStateIfMounted(() {
         _currentTab = pageKeys[index];
         _currentIndex = index;
         if (add) {
@@ -103,7 +108,9 @@ class _SketeletonState extends State<Sketeleton> {
         return isFirstRouteInCurrentTab;
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
+        backgroundColor: LightThemeColors.mainColor,
+
         extendBody: true,
         body: Stack(
           children: <Widget>[

@@ -16,6 +16,7 @@ class CalendarRepository {
     this.localStorageService = locator<LocalStorageService>();
     this.restApiService = locator<Dio>();
   }
+
   static Color fromHex(String hexString) {
     final buffer = StringBuffer();
     if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
@@ -23,10 +24,14 @@ class CalendarRepository {
     return Color(int.parse(buffer.toString(), radix: 16));
   }
 
+  Future<List<dynamic>> getAttendes(String classId) async {
+    var getAttendesUrl = '$apiUrl/entities/class/${classId.substring(5)}/users';
+    Response response = await this.restApiService.get(getAttendesUrl);
+    return response?.data;
+  }
+
   Future<List<dynamic>> getAPIEvents(
       DateTime start, DateTime end, bool normal) async {
-    var token = await this.secureLocalStorageService.readSecure('token');
-    this.restApiService.options.headers["authorization"] = "Bearer $token";
     var getEventsUrl = '$apiUrl/calendarevents';
     Response response = await this.restApiService.get(
       getEventsUrl,
@@ -52,7 +57,10 @@ class CalendarRepository {
         DateTime.parse(json['start']).toLocal(),
         DateTime.parse(allday ? json['start'] : json['end']).toLocal(),
         fromHex(json['backgroundColor']),
-        json['allDay'] == 'true');
+        json['allDay'] == 'true',
+        json['description'] ?? '',
+        json['location'] ?? '',
+        json['room'] ?? '');
   }
 
   Future<List<dynamic>> getEventsLocal() async {

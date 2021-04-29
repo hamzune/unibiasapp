@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Meeting {
   /// Creates a meeting class with required details.
   Meeting(this.eventId, this.eventName, this.from, this.to, this.background,
-      this.isAllDay);
+      this.isAllDay, this.description, this.location, this.room);
 
   String eventId;
 
@@ -21,4 +21,10 @@ class Meeting {
 
   /// IsAllDay which is equivalent to isAllDay property of [Appointment].
   bool isAllDay;
+
+  String description;
+
+  String location;
+
+  String room;
 }

@@ -69,6 +69,7 @@ class ModularRouter extends RouterBase {
         builder: (context) => LoginScreen(
           key: args.key,
           userRepository: args.userRepository,
+          onRegisterClicked: () {},
         ),
         settings: data,
       );

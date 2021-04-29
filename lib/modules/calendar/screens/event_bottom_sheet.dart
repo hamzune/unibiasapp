@@ -1,5 +1,8 @@
 import 'package:app/config/themes/light_theme.dart';
+import 'package:app/constants/api_path.dart';
 import 'package:app/modules/calendar/models/meeting.dart';
+import 'package:app/modules/calendar/repositories/calendar_repository.dart';
+import 'package:app/utils/models/user_model.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -27,7 +30,8 @@ Widget _buildHandle(BuildContext context) {
   );
 }
 
-showAddEventScreen(dynamic context, Meeting event) {
+showAddEventScreen(
+    dynamic context, Meeting event, CalendarRepository calendarrepo) {
   // print(event.toString());
   return showCupertinoModalBottomSheet(
     expand: true,
@@ -110,51 +114,81 @@ showAddEventScreen(dynamic context, Meeting event) {
                       ),
                     ),
                   ),
-                  ListTile(
-                    leading: Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
-                      child: Icon(Icons.meeting_room_rounded,
-                          color: Colors.white60),
-                    ),
-                    title: Text(
-                      'CLASSROOM',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'Online',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  ListTile(
-                    leading: Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
-                      child: Icon(Icons.description, color: Colors.white60),
-                    ),
-                    title: Text(
-                      'DESCRIPTION',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'Sessions online',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  event.room != ''
+                      ? ListTile(
+                          leading: Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Icon(Icons.meeting_room_rounded,
+                                color: Colors.white60),
+                          ),
+                          title: Text(
+                            'CLASSROOM',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                            ),
+                          ),
+                          subtitle: Text(
+                            event.room,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                  event.description != '' && event.description != ''
+                      ? ListTile(
+                          leading: Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child:
+                                Icon(Icons.description, color: Colors.white60),
+                          ),
+                          title: Text(
+                            'DESCRIPTION',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                            ),
+                          ),
+                          subtitle: Text(
+                            event.description,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                  event.location != ''
+                      ? ListTile(
+                          leading: Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Icon(Icons.location_city,
+                                color: Colors.white60),
+                          ),
+                          title: Text(
+                            'LOCATION',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                            ),
+                          ),
+                          subtitle: Text(
+                            event.location,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink(),
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: Divider(
@@ -167,33 +201,70 @@ showAddEventScreen(dynamic context, Meeting event) {
               SizedBox(
                 height: 10,
               ),
-              Text(
-                'Attendess',
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+              event.eventId[0] == 'c'
+                  ? Text(
+                      'Attendess',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    )
+                  : SizedBox.shrink(),
+              SizedBox(
+                height: 20,
               ),
-              FutureBuilder(
-                  // future: ,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<dynamic>> snapshot) {
-                if (snapshot.data != null) {
-                  return ListView.builder(
-                    itemCount: snapshot.data?.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        leading: Image.network('src'),
-                        title: Text('Hamza'),
-                      );
-                    },
-                  );
-                } else {
-                  return Text('');
-                  // return CircularProgressIndicator();
-                }
-              })
+              event.eventId[0] == 'c'
+                  ? FutureBuilder(
+                      future: calendarrepo.getAttendes(event.eventId),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<List<dynamic>> snapshot) {
+                        if (snapshot.data != null) {
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: snapshot.data?.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return ListTile(
+                                leading: snapshot.data[index]['pic'] != null
+                                    ? CircleAvatar(
+                                        radius: 22.0,
+                                        backgroundImage: NetworkImage(
+                                            "$apiUrl/images/profile/" +
+                                                snapshot.data[index]['pic']),
+                                        backgroundColor: Colors.transparent,
+                                      )
+                                    : CircleAvatar(
+                                        radius: 22.0,
+                                        child: Text(
+                                          snapshot.data[index]['fullname'][0]
+                                                  .toUpperCase() ??
+                                              '',
+                                          style: TextStyle(
+                                              color:
+                                                  LightThemeColors.mainColor),
+                                        ),
+                                        backgroundColor: event.background,
+                                      ),
+                                title: Text(
+                                  snapshot.data[index]['fullname'],
+                                  style: TextStyle(
+                                      color: LightThemeColors.mainColor),
+                                ),
+                              );
+                              // return Text('');
+                            },
+                          );
+                        } else {
+                          return const Center(
+                            heightFactor: 200,
+                            child: CircularProgressIndicator(
+                              backgroundColor: LightThemeColors.mainColor,
+                            ),
+                          );
+                          // return CircularProgressIndicator();
+                        }
+                      })
+                  : SizedBox.shrink(),
             ]),
           ),
         ),
